@@ -7,13 +7,30 @@ connectDB();
 
 const app = express();
 
+const allowedOrigins = [
+  "https://noteswebsite-nine.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:3001",
+  ...(process.env.CLIENT_URLS ? process.env.CLIENT_URLS.split(",") : []),
+].map((origin) => origin.trim());
+
 const corsOptions = {
-  origin: "https://noteswebsite-nine.vercel.app",
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS blocked origin: ${origin}`));
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
