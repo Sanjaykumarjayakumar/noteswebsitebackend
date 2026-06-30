@@ -3,7 +3,7 @@ const router = require("express").Router();
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const auth = require("../middleware/authMiddleware");
-const { sendOTP } = require("../utils/sendOTP");
+const { sendOTP } = require("../utils/sendOtp");
 
 const passwordRulesMessage = "Password must be at least 8 characters with 1 capital letter and 1 special character";
 const isStrongPassword = (password = "") =>
